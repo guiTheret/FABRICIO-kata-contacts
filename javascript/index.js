@@ -36,6 +36,7 @@ const migrate = async (db) => {
 
 const insertContacts = async (db) => {
   console.log("Inserting contacts ...");
+
   const contacts = generateContacts();
   for (let i = 1; i <= numContacts; i++) {
     const contact = contacts.next().value;
@@ -49,7 +50,6 @@ const insertContacts = async (db) => {
 };
 
 const queryContact = async (db) => {
-  const start = Date.now();
   const res = await db.get("SELECT name FROM contacts WHERE email = ?", [
     `email-${numContacts}@domain.tld`,
   ]);
@@ -57,9 +57,6 @@ const queryContact = async (db) => {
     console.error("Contact not found");
     process.exit(1);
   }
-  const end = Date.now();
-  const elapsed = (end - start) / 1000;
-  console.log(`Query took ${elapsed} seconds`);
 };
 
 (async () => {
@@ -70,7 +67,11 @@ const queryContact = async (db) => {
   if (shouldMigrate) {
     await migrate(db);
   }
+  const start = Date.now();
   await insertContacts(db);
   await queryContact(db);
   await db.close();
+  const end = Date.now();
+  const elapsed = (end - start) / 1000;
+  console.log(`Query took ${elapsed} seconds`);
 })();
