@@ -50,19 +50,23 @@ const insertContacts = async (db) => {
         "INSERT INTO contacts (name, email) VALUES " +
           batch.map((contact) => `('${contact[0]}','${contact[1]}')`).join(",")
       );
-
-      console.log(`Inserted contacts ${z - batchSize + 1} to ${z}`);
       batch = [];
     }
   }
 };
 
 const queryContact = async (db) => {
-  const res = await db.get("SELECT * FROM contacts");
+  const start = Date.now();
+  const res = await db.get("SELECT name FROM contacts WHERE email = ?", [
+    `email-${numContacts}@domain.tld`,
+  ]);
   if (!res || !res.name) {
     console.error("Contact not found");
     process.exit(1);
   }
+  const end = Date.now();
+  const elapsed = (end - start) / 1000;
+  console.log(`Query took ${elapsed} seconds`);
 };
 
 (async () => {
@@ -73,11 +77,7 @@ const queryContact = async (db) => {
   if (shouldMigrate) {
     await migrate(db);
   }
-  const start = Date.now();
   await insertContacts(db);
   await queryContact(db);
   await db.close();
-  const end = Date.now();
-  const elapsed = (end - start) / 1000;
-  console.log(`Query took ${elapsed} seconds`);
 })();
