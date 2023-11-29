@@ -30,7 +30,7 @@ const migrate = async (db) => {
           id INTEGER PRIMARY KEY,
           name TEXT NOT NULL,
           email TEXT NOT NULL
-         )
+         );
          CREATE UNIQUE INDEX index_contacts_email ON contacts(email);
      `);
   console.log("Done migrating db");
