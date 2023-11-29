@@ -5,7 +5,7 @@ const process = require("process");
 
 const filename = "contacts.sqlite3";
 const numContacts = parseInt(process.argv[2], 10);
-const batchSize = 100;
+const batchSize = 10000;
 
 const shouldMigrate = !fs.existsSync(filename);
 
@@ -31,6 +31,7 @@ const migrate = async (db) => {
           name TEXT NOT NULL,
           email TEXT NOT NULL
          )
+         CREATE UNIQUE INDEX index_contacts_email ON contacts(email);
      `);
   console.log("Done migrating db");
 };
