@@ -5,7 +5,7 @@ const process = require("process");
 
 const filename = "contacts.sqlite3";
 const numContacts = parseInt(process.argv[2], 10);
-const batchSize = 100;
+const batchSize = 10000;
 
 const shouldMigrate = !fs.existsSync(filename);
 
