@@ -1,6 +1,6 @@
-By inserting contact one by one
+By inserting contact one by one (INSERT TIME)
 
-| size         | time (in ms) |
+| size         | time (in s) |
 |--------------|--------------|
 | 10           | 0.041        |
 | 100          | 0.327        |
@@ -9,24 +9,26 @@ By inserting contact one by one
 | 100,000      | 408.733      |
 | 1,000,000... | ...          |
 
-By inserting by batch of 10000
+By inserting by batch of 10000 (SELECT TIME)
 
-| size         | time (in ms) |
+| size         | time (in s) |
 |--------------|--------------|
-| 10           | 0.005        |
-| 100          | 0.005        |
-| 10000        | 0.051        |
-| 50,000       | 0.217        |
-| 100,000      | 0.4          |
-| 1,000,000... | 3.663        |
+| 10           | 0.000        |
+| 100          | 0.001        |
+| 10000        | 0.001        |
+| 50,000       | 0.002        |
+| 100,000      | 0.004        |
+| 1,000,000... | 0.06         |
 
-By inserting by index
+By inserting with index (SELECT TIME)
 
-| size         | time (in ms) |
+| size         | time (in s) |
 |--------------|--------------|
-| 10           | 0.004        |
-| 100          | 0.006        |
-| 10000        | 0.064        |
-| 50,000       | 0.246        |
-| 100,000      | 0.414        |
-| 1,000,000... | 3.614        |
+| 10           | 0.001        |
+| 100          | 0.001        |
+| 10000        | 0.001        |
+| 50,000       | 0.001        |
+| 100,000      | 0.001        |
+| 1,000,000... | 0.001        |
+
+Insert with index is slower to insert but is faster to retrieve and constant whatever the numbers of rows.
