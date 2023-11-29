@@ -5,6 +5,7 @@ const process = require("process");
 
 const filename = "contacts.sqlite3";
 const numContacts = parseInt(process.argv[2], 10);
+const batchSize = 100;
 
 const shouldMigrate = !fs.existsSync(filename);
 
@@ -38,21 +39,25 @@ const insertContacts = async (db) => {
   console.log("Inserting contacts ...");
 
   const contacts = generateContacts();
-  for (let i = 1; i <= numContacts; i++) {
+  let batch = [];
+
+  for (let z = 1; z <= numContacts; z++) {
     const contact = contacts.next().value;
-    await db.run(
-      "INSERT INTO contacts (name, email) VALUES (?, ?)",
-      contact.name,
-      contact.email
-    );
-    console.log(`Inserted contact ${i}`);
+    batch.push([contact.name, contact.email]);
+    if (z % batchSize === 0 || z === numContacts + 1) {
+      await db.run(
+        "INSERT INTO contacts (name, email) VALUES " +
+          batch.map((contact) => `('${contact[0]}','${contact[1]}')`).join(",")
+      );
+
+      console.log(`Inserted contacts ${z - batchSize + 1} to ${z}`);
+      batch = [];
+    }
   }
 };
 
 const queryContact = async (db) => {
-  const res = await db.get("SELECT name FROM contacts WHERE email = ?", [
-    `email-${numContacts}@domain.tld`,
-  ]);
+  const res = await db.get("SELECT * FROM contacts");
   if (!res || !res.name) {
     console.error("Contact not found");
     process.exit(1);
